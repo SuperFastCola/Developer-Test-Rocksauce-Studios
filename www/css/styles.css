@@ -1,0 +1,36 @@
+* {
+  padding: 0;
+  margin: 0; }
+
+body {
+  font-family: "Exo", sans-serif;
+  font-size: 14px;
+  padding: 0px; }
+
+.articles_area {
+  width: 100%;
+  margin: 0px auto;
+  border: 1px solid yellow; }
+
+.article {
+  width: 675px;
+  height: auto;
+  border: 1px solid red; }
+
+.thumbnail {
+  display: block;
+  width: 90px;
+  height: 90px;
+  background-size: 100%; }
+
+@media (max-width: 769px) {
+  .article {
+    border: 1px solid yellow;
+    width: 90%; } }
+@media (max-width: 549px) {
+  .article {
+    border: 1px solid blue; } }
+@media (max-width: 370px) {
+  .article {
+    border: 1px solid green;
+    width: 100%; } }
