@@ -6,7 +6,8 @@
 
 	// object holder
 	var my = {};
-	my.category = "funny";
+	my.defaultCategory = "funny";
+	my.category = my.defaultCategory;
 	my.before = null;
 	my.after = null;
 	my.urlParts = Array("https://www.reddit.com/r/","/.json");
@@ -25,15 +26,36 @@
 		}
 	}
 
+	my.addPageNavigation = function(before,after){
+
+		$(".navigation").remove();
+
+		var navigation = $.trim($("#articleNavigation").html());
+		var currentNavigation = $(navigation).clone();
+
+		if(before!=null){
+			currentNavigation.find(".prevPage").bind('click',function(e){
+				my.getData(undefined,String("before=" + before));
+			});
+		}
+		else{
+			currentNavigation.find(".prevPage").remove();
+		}
+
+		if(after!=null){
+			currentNavigation.find(".nextPage").bind('click',function(e){
+				my.getData(undefined,String("after=" + after));
+			});
+		}
+		else{
+			currentNavigation.find(".nextPage").remove();
+		}
+		
+		$(".articles_area").append(currentNavigation);
+	}
+
 	my.showArticles = function(output){
 
-		if(output.data.after!=null){
-			my.after = output.data.after;
-		}
-
-		if(output.data.before!=null){
-			my.before = output.data.before;
-		}
 
 		$(".articles_area").empty();
 
@@ -41,7 +63,7 @@
 	
 			var currentrow = null;
 				
-			template = $.trim($("#articletemplate").html());
+			template = $.trim($("#articleTemplate").html());
 
 				for(var i in output.data.children){
 					var rowclass = (i%2==0)?"odd":"";
@@ -50,13 +72,13 @@
 					currentrow = $(template).clone();
 					$(currentrow).addClass(rowclass);
 
-					console.log(article.thumbnail);
-					
-					if(!Boolean(article.thumbnail.match(/nsfw/i))){
-						$(currentrow).find(".thumbnail").css("background-image","url(" + article.thumbnail + ")");	
+					console.log(article);
+
+					if(Boolean(article.thumbnail.match(/^(nsfw|self|default)/i)) || !Boolean(String(article.thumbnail).match(/\w/) ) ){
+						$(currentrow).find(".thumbnail").css("background-image","url(images/unknown.png)");
 					}
 					else{
-						$(currentrow).find(".thumbnail").css("background-image","url(images/unknown.png)");
+						$(currentrow).find(".thumbnail").css("background-image","url(" + article.thumbnail + ")");	
 					}
 					
 					$(currentrow).find(".title").text(article.title);
@@ -68,18 +90,24 @@
 				}
 		
 
+				my.addPageNavigation(output.data.before,output.data.after);
 
-		// currentrow = template = null;
+		currentrow = template = null;
 	}
 
-	my.getData = function(category){
+	my.getData = function(category,direction){
 
-		if(typeof category != "undefined"){
+		if(typeof category != "undefined" && typeof direction=="undefined"){
 			my.category = category;
+		}
+		
+		var urlParams = "";
+		if(typeof direction!="undefined"){
+			urlParams = "?count=25&" + direction;
 		}
 
 		var promise = $.ajax({
-		    url:  String(my.urlParts[0] + my.category + my.urlParts[1]),
+		    url:  String(my.urlParts[0] + my.category + my.urlParts[1] + urlParams),
 			dataType: "json",
 			type: 'GET'
 		} );
@@ -106,9 +134,11 @@
 		});
 
 		$(".reset").bind('click',function(){
-			$(".search_field").val("");
-			my.getData(true);
+			$(".search_field").val(my.defaultCategory);
+			my.getData(my.defaultCategory);
 		});
+
+
 	}
 
 	my.init = function () {
