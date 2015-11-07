@@ -50,6 +50,8 @@
 					currentrow = $(template).clone();
 					$(currentrow).addClass(rowclass);
 
+					console.log(article.thumbnail);
+					
 					if(!Boolean(article.thumbnail.match(/nsfw/i))){
 						$(currentrow).find(".thumbnail").css("background-image","url(" + article.thumbnail + ")");	
 					}
