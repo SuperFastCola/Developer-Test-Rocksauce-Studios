@@ -8,6 +8,9 @@
 	var my = {};
 	my.defaultCategory = "funny";
 	my.category = my.defaultCategory;
+	my.pages = [];
+	my.articles = [];
+	my.currentPage = 0;
 	my.before = null;
 	my.after = null;
 	my.urlParts = Array("https://www.reddit.com/r/","/.json");
@@ -35,7 +38,16 @@
 
 		if(before!=null){
 			currentNavigation.find(".prevPage").bind('click',function(e){
-				my.getData(undefined,String("before=" + before));
+				my.currentPage--;
+				if(my.currentPage<=0){
+					my.currentPage = 0;
+					my.getData(my.category);
+				}
+				else{
+					my.getData(undefined,String("after=" + my.pages[my.currentPage] ) );	
+				}
+
+				
 			});
 		}
 		else{
@@ -45,6 +57,8 @@
 		if(after!=null){
 			currentNavigation.find(".nextPage").bind('click',function(e){
 				my.getData(undefined,String("after=" + after));
+				my.pages.push(after);
+				my.currentPage++;
 			});
 		}
 		else{
@@ -56,21 +70,28 @@
 
 	my.showArticles = function(output){
 
-
 		$(".articles_area").empty();
 
+		my.gotoTopOfPage();
+
 			var template = null;
-	
 			var currentrow = null;
+
+			delete my.articles;
+			my.articles = null;
+			my.articles = [];
 				
 			template = $.trim($("#articleTemplate").html());
 
 				for(var i in output.data.children){
+
 					var rowclass = (i%2==0)?"odd":"";
 					var article = output.data.children[i].data;
 
+					my.articles.push(output.data.children[i].data);
+
 					currentrow = $(template).clone();
-					$(currentrow).addClass(rowclass);
+					$(currentrow).addClass(rowclass).attr("data-ref",i);
 
 					if(Boolean(article.thumbnail.match(/^(nsfw|self|default)/i)) || !Boolean(String(article.thumbnail).match(/\w/) ) ){
 						$(currentrow).find(".thumbnail").css("background-image","url(images/unknown.png)");
@@ -81,22 +102,46 @@
 					
 					$(currentrow).find(".title").text(article.title);
 					$(currentrow).find(".author").text(article.author);
-					$(currentrow).find(".num_comments").text(String(article.num_comments));
-					$(currentrow).find(".ups").text(String(article.ups));
-					$(currentrow).find(".downs").text(String(article.downs));
+					$(currentrow).find(".num_comments em").text(String(article.num_comments));
+					$(currentrow).find(".ups em").text(String(article.ups));
+					$(currentrow).find(".downs em").text(String(article.downs));
 					$(".articles_area").append(currentrow);
 				}
-		
-				console.log(output.data.before);
+				
+				$(".article").bind("click",my.showArticleActions);
+
 				my.addPageNavigation(output.data.before,output.data.after);
 
+		my.checkForNoValueInSearch();		
 		currentrow = template = null;
+	}
+
+	my.checkForNoValueInSearch = function(){
+		var searchval = $(".search_field").val();
+
+		if(!Boolean(searchval.match(/\w/))){
+			$(".search_field").val(my.defaultCategory);
+		}
+	}
+
+	my.gotoTopOfPage = function(){
+		var body = $("body, html");
+		if(body.scrollTop()!=0)
+		{
+			body.stop().animate({
+				scrollTop: 0
+			}, 1000);
+		}
 	}
 
 	my.getData = function(category,direction){
 
 		if(typeof category != "undefined" && typeof direction=="undefined"){
 			my.category = category;
+		}
+
+		if(!Boolean(my.category.match(/\w/))){
+			my.category = my.defaultCategory;
 		}
 		
 		var urlParams = "";
@@ -105,7 +150,6 @@
 		}
 
 		var fullURL = String(my.urlParts[0] + my.category + my.urlParts[1] + urlParams);
-		console.log(fullURL);
 
 		var promise = $.ajax({
 		    url: fullURL,
@@ -113,37 +157,61 @@
 			type: 'GET'
 		} );
 
-		promise.done(my.showArticles);
+		promise.success(my.showArticles);
 
-		promise.fail( function( jqXHR, textStatus, errorThrown ) {
+		promise.error( function( jqXHR, textStatus, errorThrown ) {
 			console.log(jqXHR.responseText);
-			console.log(jQuery.parseJSON(jqXHR.responseText) );
 		} );
+	}
+
+	my.searchFieldAction = function(keepClass){
+		my.getData($(".search_field").val());
+
+		if(typeof keepClass == "undefined"){
+			$(".search_field").removeClass("expanded");
+		}
+	}
+
+	my.showArticleActions = function(e){
+		$(".actions").remove();
+		var actions = $.trim($("#articleActions").html());
+		var currentActions = $(actions).clone();
+		var articleid = $(e.currentTarget).attr("data-ref");
+		$("body").append(currentActions).addClass("overlay")
 	}
 
 	my.assignFunctions = function(){
 		
 		$(".search_field").focus(function(){
 			var text = String($(this).val());
-			if(text.match(/search\ssome\sstuff/i)){
+
+			$(this).addClass("expanded");
+
+			if(!Boolean(text.match(/\w/i))){
 				$(this).val("");
 			}	
+		}).val(my.category);
+
+		$(".search_field").blur(function(){
+			my.searchFieldAction();
 		});
 
-		$(".search_field").keyup(function(){
-			my.getData($(this).val());
+		$(".search_field").keypress(function(e) {
+		  if (e.which == 13){
+		    e.preventDefault();
+		    my.searchFieldAction(true);
+		  }
 		});
 
-		$(".reset").bind('click',function(){
-			$(".search_field").val(my.defaultCategory);
-			my.getData(my.defaultCategory);
+		$(".search_field").keyup(function(e) {
+			if(String($(this).val()).length>2){
+			 	my.searchFieldAction(true);
+			}
 		});
-
 
 	}
 
 	my.init = function () {
-		console.log("Ready");
 		my.getData();
 		my.assignFunctions();
 	}

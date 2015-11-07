@@ -6,44 +6,60 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="stylesheet" type="text/css" href="css/styles.css?v=1.0">
-	<link href='https://fonts.googleapis.com/css?family=Exo:400,400italic' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Exo:300,300italic,400,500' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
 	<div class="holder">
-		<div class="header_area">
-			<h1><span>A List of Things</span></h1>
-			<a class="reset">Refresh</a>
-			<div class="search_area">
-					<input type="text" name="criteria" class="search_field" value="Search Some Stuff" />
-					<div class="sort_message">Showing <b>1-8</b> <span class="sm_rows">Row</span></div>
-			</div>
-			<div class="sorting_nav">
-				<a class="sort title asc" 	data-ref="title">Job Title</a>
-				<a class="sort code" 	data-ref="code">Code</a>
-				<a class="sort company" data-ref="company">Company</a>
-				<a class="sort created" 	data-ref="created">Date</a>
+		<div class="header clearfix">
+			<div class="header_area clearfix">
+				<h1>Reddit</h1>
+				<input type="text" name="criteria" class="search_field" value="" />
 			</div>
 		</div>
+
 		<div class="articles_area">
 		</div>
 	</div>
 
 	<script id="articleTemplate" type="text/template">
-		 <div class="article">
-		 	<div class="articleData thumbnail"></div>
-		 	<div class="articleData holder">
+		 <div class="article clearfix">
+		 	<div class="articleData thumbnail clearfix"></div>
+		 	<div class="articleData articleHolder clearfix">
+		 		<span class="articleData author"></span>
 			 	<span class="articleData title"></span>
-			 	<span class="articleData author"></span>
-			 	<span class="articleData num_comments"></span>
-			 	<span class="articleData ups"></span>
-			 	<span class="articleData downs"></span>
+			 	<span class="articleData num_comments clearfix"><em></em> comments</span>
+			 	<span class="articleData ups clearfix"><em></em> ups</span>
+			 	<span class="articleData downs clearfix"><em></em> downs</span>
 		 	</div>
 		 </div>
 	</script>
 
+	<script id="articleActions" type="text/template">
+		<div class="actions">
+	 		<div class="actionsHolder articleButton">
+	 			<div class="thumbnail clearfix"></div>
+			 	<div class="actionsArticle clearfix">
+			 		<span class="actionsArticle author"></span>
+				 	<span class="actionsArticle title"></span>
+				 	<span class="actionsArticle ups clearfix"><em></em></span>
+				 	<span class="actionsArticle downs clearfix"><em></em></span>
+			 	</div>
+	 		</div>
+
+	 		<div class="actionsHolder redditLink">
+	 			<a class="actionLinkText">Open on Reddit</a>
+	 		</div>
+
+	 		<div class="actionsHolder emailLink">
+	 			<a class="actionLinkText">Email to a Friend</a>
+	 		</div>
+
+	 	</div>
+	</script>
+
 	<script id="articleNavigation" type="text/template">
-	 <div class="article navigation">
+	 <div class="navigation clearfix">
 	 	<a class="nextPage">Next</a>
 	 	<a class="prevPage">Prev</a>
 	 </div>

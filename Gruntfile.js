@@ -24,6 +24,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         concat: {
             options: {
               separator: ';',
@@ -49,7 +50,6 @@ module.exports = function(grunt) {
     // Load required modules
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-sass');
-    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     
