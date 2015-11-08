@@ -80,7 +80,7 @@ body {
   width: 100%; }
 
 .header_area {
-  width: 675px;
+  width: 800px;
   height: 50px;
   margin: 0px auto; }
   .header_area .positioning, .header_area h1, .header_area input {
@@ -126,7 +126,7 @@ body {
 .article {
   display: block;
   clear: both;
-  width: 655px;
+  width: 780px;
   margin: 0px auto 0px auto;
   padding: 25px 10px;
   border-bottom: 1px solid #dbdbeb; }
@@ -147,7 +147,7 @@ body {
   border: 3px solid #dbdbeb; }
 
 .articleHolder {
-  width: 545px;
+  width: 670px;
   margin: 0px;
   padding: 0px 0px 0px 17px;
   float: left; }
@@ -194,7 +194,7 @@ body {
   background-repeat: no-repeat; }
 
 .navigation {
-  width: 675px;
+  width: 800px;
   margin: 0px auto 0px auto;
   padding: 10px 0px 20px 0px;
   border: 0px; }
@@ -222,16 +222,63 @@ body {
   .navigation .prevPage {
     float: left; }
 
-.actions {
+#actions {
   position: fixed;
   top: 0px;
   left: 0px;
   z-index: 100;
   width: 100%;
   height: 100%;
+  opacity: 0;
+  -moz-opacity: 0;
+  filter: "alpha(opacity = msamt)";
   background-color: rgba(0, 0, 0, 0.5); }
+  #actions #actionColumns {
+    position: relative;
+    margin: 0px auto;
+    padding: 0px;
+    width: 800px;
+    border: 1px solid red;
+    height: 100%; }
+  #actions .actionsHolder {
+    position: absolute;
+    width: 220px;
+    padding: 20px 30px 20px 30px;
+    background-color: white;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    border-radius: 20px;
+    min-height: 140px; }
+    #actions .actionsHolder .actionsArticle {
+      float: none; }
+    #actions .actionsHolder .marginCenter, #actions .actionsHolder .thumbnail, #actions .actionsHolder .author, #actions .actionsHolder .title {
+      float: none;
+      margin: 0px auto; }
+    #actions .actionsHolder .author {
+      font-size: 18px; }
+    #actions .actionsHolder .title {
+      text-align: center;
+      font-size: 12px; }
+  #actions #articleButton {
+    top: 200px;
+    left: 0px;
+    -webkit-transition: opacity 0.25s;
+    -moz-transition: opacity 0.25s;
+    -o-transition: opacity 0.25s;
+    transition: opacity 0.25s; }
+    #actions #articleButton.fiftyPercent {
+      opacity: 0.5;
+      -moz-opacity: 0.5;
+      filter: "alpha(opacity = msamt)"; }
+  #actions #redditLink {
+    top: 200px;
+    right: 0px; }
+  #actions #emailLink {
+    top: 400px;
+    right: 0px; }
 
-@media (max-width: 675px) {
+@media (max-width: 800px) {
   .header_area {
     width: 90%; }
 

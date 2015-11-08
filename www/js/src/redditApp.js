@@ -21,6 +21,8 @@
 		my.ready = setInterval(my.checkForJQuery,10);
 	}
 
+	//timer interval to check for Jquery object
+	//if found starts main script functions
 	my.checkForJQuery = function(){
 		if(typeof window.jQuery != "undefined"){
 			clearInterval(my.ready);
@@ -32,9 +34,7 @@
 	my.addPageNavigation = function(before,after){
 
 		$(".navigation").remove();
-
-		var navigation = $.trim($("#articleNavigation").html());
-		var currentNavigation = $(navigation).clone();
+		var currentNavigation = my.returnHtmlTemplate("articleNavigation");
 
 		if(before!=null){
 			currentNavigation.find(".prevPage").bind('click',function(e){
@@ -68,49 +68,50 @@
 		$(".articles_area").append(currentNavigation);
 	}
 
+	my.returnBackCSS = function(imgSrc){
+		if(Boolean(imgSrc.match(/^(nsfw|self|default)/i)) || !Boolean(String(imgSrc).match(/\w/) ) ){
+			return {"background-image":"url(images/unknown.png)"}
+		}
+		else{
+			return {"background-image":"url(" + imgSrc + ")"}
+		}
+	}
+
 	my.showArticles = function(output){
 
 		$(".articles_area").empty();
 
 		my.gotoTopOfPage();
 
-			var template = null;
-			var currentrow = null;
+		var template = null;
+		var currentrow = null;
 
-			delete my.articles;
-			my.articles = null;
-			my.articles = [];
-				
-			template = $.trim($("#articleTemplate").html());
+		delete my.articles;
+		my.articles = null;
+		my.articles = [];
+			
+		template = $.trim($("#articleTemplate").html());
 
-				for(var i in output.data.children){
+		for(var i in output.data.children){
 
-					var rowclass = (i%2==0)?"odd":"";
-					var article = output.data.children[i].data;
+			var rowclass = (i%2==0)?"odd":"";
+			var article = output.data.children[i].data;
+			my.articles.push(output.data.children[i].data);
 
-					my.articles.push(output.data.children[i].data);
+			currentrow = $(template).clone();
+			$(currentrow).addClass(rowclass).attr("data-ref",i);
+			$(currentrow).find(".thumbnail").css(my.returnBackCSS(article.thumbnail ));
+			$(currentrow).find(".title").text(article.title);
+			$(currentrow).find(".author").text(article.author);
+			$(currentrow).find(".num_comments em").text(String(article.num_comments));
+			$(currentrow).find(".ups em").text(String(article.ups));
+			$(currentrow).find(".downs em").text(String(article.downs));
+			$(".articles_area").append(currentrow);
+		}
+		
+		$(".article").bind("click",my.showarticleActions);
 
-					currentrow = $(template).clone();
-					$(currentrow).addClass(rowclass).attr("data-ref",i);
-
-					if(Boolean(article.thumbnail.match(/^(nsfw|self|default)/i)) || !Boolean(String(article.thumbnail).match(/\w/) ) ){
-						$(currentrow).find(".thumbnail").css("background-image","url(images/unknown.png)");
-					}
-					else{
-						$(currentrow).find(".thumbnail").css("background-image","url(" + article.thumbnail + ")");	
-					}
-					
-					$(currentrow).find(".title").text(article.title);
-					$(currentrow).find(".author").text(article.author);
-					$(currentrow).find(".num_comments em").text(String(article.num_comments));
-					$(currentrow).find(".ups em").text(String(article.ups));
-					$(currentrow).find(".downs em").text(String(article.downs));
-					$(".articles_area").append(currentrow);
-				}
-				
-				$(".article").bind("click",my.showArticleActions);
-
-				my.addPageNavigation(output.data.before,output.data.after);
+		my.addPageNavigation(output.data.before,output.data.after);
 
 		my.checkForNoValueInSearch();		
 		currentrow = template = null;
@@ -164,6 +165,11 @@
 		} );
 	}
 
+	my.returnHtmlTemplate = function(id){
+		var template = $.trim($(String("#" + id) ).html() );
+		return $(template).clone();
+	}
+
 	my.searchFieldAction = function(keepClass){
 		my.getData($(".search_field").val());
 
@@ -172,12 +178,88 @@
 		}
 	}
 
-	my.showArticleActions = function(e){
-		$(".actions").remove();
-		var actions = $.trim($("#articleActions").html());
-		var currentActions = $(actions).clone();
-		var articleid = $(e.currentTarget).attr("data-ref");
-		$("body").append(currentActions).addClass("overlay")
+	my.removeBackgroundTimeout = function(){
+		my.addRemoveActionsClick();
+	}
+
+	my.snapBackObject = function(id,delay){
+		var butn = document.getElementById(id);
+		var coord = String($(butn).attr("data-ref")).split(":");
+		var props = {
+				"x":coord[0],
+				"y":coord[1],
+				onComplete:function(){
+					$("#articleButton").removeClass("fiftyPercent");
+					setTimeout(my.removeBackgroundTimeout, 1000);
+				}
+			};
+
+		if(typeof delay !="undefined"){
+			props.delay = .5;
+		}
+
+		TweenLite.to(butn,.25,props);	
+	}
+
+	my.addRemoveActionsClick = function(remove){
+		if(typeof remove != "undefined"){
+			$("#actions").unbind("click",my.removeOverlay);
+		}
+		else{
+			$("#actions").bind("click",my.removeOverlay);
+		}
+	}
+
+	my.removeOverlay = function(){
+		$("#actions").remove();
+		$("body").removeClass("overlay");
+	}
+
+	my.showarticleActions = function(e){
+
+		var actionArea = my.returnHtmlTemplate("articleActions");
+		var currentArticle = my.articles[$(e.currentTarget).attr("data-ref")];
+		
+		actionArea.find(".title").text(currentArticle.title);
+		actionArea.find(".thumbnail").css(my.returnBackCSS(currentArticle.thumbnail));
+
+		$("body").append(actionArea).addClass("overlay");
+		TweenLite.to("#actions",.25,{"opacity":1.0});
+		my.addRemoveActionsClick();
+
+		Draggable.create("#articleButton", {
+			type:"x,y", 
+			edgeResistance:0.65, 
+			bounds:"#actions",
+			onDragStart:function() {
+				//set original location
+				var attr = $("#articleButton").attr("data-ref");
+				$("#articleButton").addClass("fiftyPercent");
+
+				if(typeof attr == "undefined"){
+					$("#articleButton").attr("data-ref",String(this.x + ":" +this.y));	
+				}
+			},
+			onDragEnd:function() {
+
+				var url = "https://www.reddit.com" + currentArticle.permalink;
+
+				my.addRemoveActionsClick(true);
+
+				if (this.hitTest("#redditLink", "80%")){
+					window.open(url, 'redditLink');
+					my.snapBackObject("articleButton",true);
+				}
+				else if(this.hitTest("#emailLink", "80%")){
+					window.location.href = "mailto:?subject=Check%20out%20this%20Reddit%20post&body="+url;
+					my.snapBackObject("articleButton",true);
+				}
+				else{
+					my.snapBackObject("articleButton");
+				}
+				
+			}
+		});
 	}
 
 	my.assignFunctions = function(){

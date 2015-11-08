@@ -102,7 +102,7 @@ $purple: #dbdbeb
 $morePurple: #636474
 $blackFifty: rgba(0,0,0,0.5)
 $baseFontSize: 14px
-$articleWidth: 675px
+$articleWidth: 800px
 $thumbnailWidth: 90px
 $thumbnailBorderWidth: 3px
 $articleHolderWidth: $articleWidth - $thumbnailWidth - ($thumbnailBorderWidth * 2)
@@ -293,14 +293,70 @@ body
 //////////////////////////////////////////////////////////////////
 // ACTIONS
 
-.actions
+#actions
 	position: fixed
 	top: 0px
 	left: 0px
 	z-index: 100
 	width: 100%
 	height: 100%
+	+opacity(0)
 	+backcolor($blackFifty)
+
+	#actionColumns
+		position: relative
+		margin: 0px auto
+		padding: 0px
+		width: $articleWidth
+		border: 1px solid red
+		height: 100%
+
+	.actionsHolder	
+		$padding: 20px
+		$paddingSides: 30px
+		position: absolute
+		width: 280px - ($paddingSides * 2)
+		padding: $padding $paddingSides $padding $paddingSides
+		+backcolor(white)
+		+border-radius($padding)
+		min-height: 180px - ($padding * 2)
+
+		.actionsArticle
+			float: none
+
+		.marginCenter
+			float: none
+			margin: 0px auto
+
+		.thumbnail
+			@extend .marginCenter
+		
+		.author
+			@extend .marginCenter
+			font-size: 18px
+
+		.title
+			@extend .marginCenter
+			text-align: center
+			font-size: 12px
+
+	$top: 200px	
+	$edgeDistance: 0px
+	#articleButton
+		top: $top
+		left: $edgeDistance
+		+trans_prop
+
+		&.fiftyPercent
+			+opacity(0.5)
+
+	#redditLink
+		top: $top
+		right: $edgeDistance	
+
+	#emailLink	
+		top: 400px
+		right: $edgeDistance
 
 
 //////////////////////////////////////////////////////////////////
