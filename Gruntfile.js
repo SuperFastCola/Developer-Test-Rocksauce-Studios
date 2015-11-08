@@ -30,7 +30,7 @@ module.exports = function(grunt) {
               separator: ';',
             },
             dist: {
-              src: ['www/js/src/jquery-1.11.3.min.js', 'www/js/src/TweenLite.min.js','www/js/src/CSSPlugin.min.js','www/js/src/Draggable.min.js'],
+              src: ['www/js/src/TweenLite.min.js','www/js/src/CSSPlugin.min.js','www/js/src/Draggable.min.js'],
               dest: 'www/js/lib/externals.js',
             },
         },

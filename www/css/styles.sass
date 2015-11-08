@@ -94,6 +94,15 @@ table
 	$msamt: ($amt * 100)
 	filter: "alpha(opacity = #{msamt})"
 
+=notSelectable()
+	-webkit-touch-callout: none
+	-webkit-user-select: none
+	-khtml-user-select: none
+	-moz-user-select: none
+	-ms-user-select: none
+	user-select: none
+	-ms-touch-action: none	
+
 //////////////////////////////////////////////////////////////////
 //user defined variables
 $blue: #00b6ff
@@ -212,12 +221,18 @@ body
 	background-size: 100%
 	border: $thumbnailBorderWidth solid $purple
 
+	&.noimage
+		background-repeat: no-repeat
+		+backpos(center,center)
+		background-image: url(data:image/gif;base64,R0lGODlhwgDGAKIAAP///8rKyr+/v+vr69ra2v7+/vX19fv7+yH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo2QTFDRDA5RTdFNEExMUU1ODZCRUI4MkIxQTcxQTJBMyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo2QTFDRDA5RjdFNEExMUU1ODZCRUI4MkIxQTcxQTJBMyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjVFRURGMTYxN0U0QTExRTU4NkJFQjgyQjFBNzFBMkEzIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjVFRURGMTYyN0U0QTExRTU4NkJFQjgyQjFBNzFBMkEzIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAAsAAAAAMIAxgAAA/8Iutz+MMpJq7046827/2AojmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHLJbDqf0Kh0Sq1ar9isdsvter/gsHhMLpvP6LR6zW673/C4fE6v2+/4vH7P7/v/gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnhsHAQIBBp8uBAKpAgemKwOqqQStKqIDAAa1syeosgoGo7omAQENqLbBIq/HBQUKw8gizwAFBqwAytAf2AWhA80A0tkc0gWoAdbY4hrbuKnezsTqGeSvqefN6fIV26Gw7+Dx9FGgB2vUAXwCjgmMwE9UwX+irC18QLCgQYS9JjZoaNH/3beIGhtU7HjvmoCMITl29NgMZEiACgrUW3nRJMqFKmkm/Lgq5Eid5xS8uikvXT+dqiD2XCgq5kykNYfiPDntKFSPzpbKAynzKqySUotSBWDV686sErNxfWoW7NhsUrk5NJuUZ9pgawtS+HrQJtyxB1DB2uvPLrS8eicUdEv0U9iy7iSwPQtOayvEDyVbDOp31mPBmRl2VHq3k6hS1FY2XgCaL8ZWj+cWXK2gdeGspT6dnvZLtQTbqhg7Bgw8uATZD3nm5rQ7Nc2AFJ/3DbspbDmgx3UqXZ6peW+dEpBypo7JevHEEKBu1+T9anjx6N5aMn9V4cb6yjHlcq4ewmSS/9PJN8krxDBznkX2MfDfaPlVsl87V6124GLx0cYIgTFNOBsEGt5WGXeQPEiXhG0FaGEiGE7T4VcQIIfUepE86CJ20ZX4GiQpdkVXAAP06GOPM2rXoCMy0mUkfDc2kuOCRzZJ2W6N7AfZiARU6aRBQgmIyJJOEpBWYE4qleAhUgYpXotNugXdIVw2CeIC3xkppiJlOvnekWqiCMw0TEJ155FzkpmQAlOaVRqhV+ZpSJtdcnjlk4MWYgyhZnr1ZpxpxrcmIL/Eo+OjJ1kDJqiQjunHpHKRqiqACG3aR6dOrSprclmZugcvlM6qK5YmuapHb+gMI+ywxBZr7LHIJlvscoGR/SHYAsxEK+201FZr7bXYVsuAPYCocugQM3Uby5tCPCXurujqdGIdEKbrripeviTvvPTWa++9+Oar77789uvvvwAHLPDABBds8MEIJ6zwwgw37PDDEEcs8cQUV2zxxRhnrPHGHHfs8ccghyzyyCSXbPLJKKes8sost+zyyzCrkAAAOw==)
+
 .articleHolder
 	$sidePadding: 17px
 	width: $articleHolderWidth - ($sidePadding * 2)
 	margin: 0px
 	padding: 0px 0px 0px $sidePadding
 	float: left
+	+notSelectable
 	
 .setting
 	display: block
@@ -303,13 +318,25 @@ body
 	+opacity(0)
 	+backcolor($blackFifty)
 
+	.actionsCloser
+		position: absolute
+		width: 100%
+		height: 100%
+		top: 0px
+		left: 0px
+		z-index: 1
+
+
 	#actionColumns
 		position: relative
 		margin: 0px auto
 		padding: 0px
 		width: $articleWidth
-		border: 1px solid red
 		height: 100%
+		z-index: 20
+
+		.actionsCloser
+			z-index: 1
 
 	.actionsHolder	
 		$padding: 20px
@@ -326,6 +353,7 @@ body
 
 		.marginCenter
 			float: none
+			text-align: center
 			margin: 0px auto
 
 		.thumbnail
@@ -333,12 +361,42 @@ body
 		
 		.author
 			@extend .marginCenter
-			font-size: 18px
+			margin-top: 10px
+			margin-bottom: 20px
 
 		.title
 			@extend .marginCenter
+			font-size: 14px
+			margin-bottom: 30px
+
+		.votesHolder
+			width: 100px
+			margin: 0px auto			
+
+			&.wider
+				width: 140px
+
+			.ups, .downs
+				padding: 0px 0px 0px 25px
+
+			.ups
+				float: left
+
+			.downs	
+				float: right
+
+		.actionLinkText
+			$linkWidth: 200px
+			display: block
+			position: absolute
+			width: $linkWidth
+			top: 78%
+			left: 50%
+			margin-left: -($linkWidth/2)
 			text-align: center
-			font-size: 12px
+			color: $blue
+			font-size: 24px
+
 
 	$top: 200px	
 	$edgeDistance: 0px
@@ -346,17 +404,43 @@ body
 		top: $top
 		left: $edgeDistance
 		+trans_prop
+		z-index: 30
 
 		&.fiftyPercent
 			+opacity(0.5)
 
+	.actionsInstructions
+		$instructionsWidth: 150px
+		width: $instructionsWidth
+		position: absolute
+		left: 50%
+		margin-left: -($instructionsWidth/2)
+		top: 330px
+		font-size: 20px
+		color: white
+
+		&.drag
+			display: none
+
+		&.nodrag
+			display: none
+
 	#redditLink
 		top: $top
 		right: $edgeDistance	
+		+backpos(center,20px)
+		z-index: 25
+		background-image: url(data:image/gif;base64,R0lGODlhgwBvAKIAAP///wC2/5Lg/2TT/zrH/8Ht/xq9/+b4/yH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1RUVERjE1QjdFNEExMUU1ODZCRUI4MkIxQTcxQTJBMyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo1RUVERjE1QzdFNEExMUU1ODZCRUI4MkIxQTcxQTJBMyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjVFRURGMTU5N0U0QTExRTU4NkJFQjgyQjFBNzFBMkEzIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjVFRURGMTVBN0U0QTExRTU4NkJFQjgyQjFBNzFBMkEzIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28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)
 
 	#emailLink	
 		top: 400px
 		right: $edgeDistance
+		+backpos(center,30px)
+		z-index: 20
+		background-image: url(data:image/gif;base64,R0lGODlhYABUAKIAAP///wC2/1PO//n9//z+//b8/xG7/zDE/yH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1RUVERjE1RjdFNEExMUU1ODZCRUI4MkIxQTcxQTJBMyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo1RUVERjE2MDdFNEExMUU1ODZCRUI4MkIxQTcxQTJBMyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjVFRURGMTVEN0U0QTExRTU4NkJFQjgyQjFBNzFBMkEzIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjVFRURGMTVFN0U0QTExRTU4NkJFQjgyQjFBNzFBMkEzIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAAsAAAAAGAAVAAAA/84YtH+MMpJq73XCIW7/2AYLGJpnhmqrmzrvnAslwIB3Hiu73zv/0AfQRCqBY/IpBI3pNmW0KiyaTJKr1gd9WTNeqHbBxHU/ZqBYYegICqf37l0Yw24jCFu+Fk+KtwuBXdiT3p7gmp+fxYAgRJ5hVJ8dDgXN40Rj5BTh3OJlIuWnCOEmkuSnp8VOZd4pKVHpzyVq6KZrzuxsqA5HJiut7i1qDqzOr2twD2SAz/FxrW/wMtAzs+O0aXT1Ls8x4PJANrbqj/eathw4uMUQeZz6Gbq6xNH7iPMkPLzEkj2G4X+8CWpVq6WQDMBoRAs6OhgloQKudUz+AViRHJKLErRuGTiYTuKG0FK8fixYRSOF9mFNJlR5BWSE1nGxORwpEQoKLu5xAKz384dOW1ixBIUQNEoPZPkPIr05hWOTJsO9WIxqlSVZxJavUoPjj9WYmqeSXpSFAOapciWxfAvrVOEosLeUrtyQttXdOviEVsobyQBB84esKXHL7g3hg+bSazYC+PGPN9C1vR4Mld+lpNVzqxkM2cknj8HCS26meTSX0ij1jV19djTrl/Cjn05Am04qm/Xma17IO/eR3LfFk6beGzjrpGvVo6aeekZ0KNLn069uvUGZ69rp6Bhu/eGJL571zAgAQA7)
+
+		.actionLinkText
+			top: 73%
 
 
 //////////////////////////////////////////////////////////////////
@@ -408,6 +492,109 @@ body
 	.navigation
 		width: 95%
 
+	//ACTIONS	
+	#actions				
+
+		#actionColumns
+			width: 90%
+
+		.actionsHolder	
+			$padding: 20px
+			$paddingSides: 30px
+			z-index: 100
+
+			position: relative
+			top: auto !important
+
+			+trans_prop(all)
+
+			.marginCenterResponsive
+				float: none
+				text-align: center
+				margin: 0px auto
+
+			.thumbnail
+				@extend .marginCenterResponsive
+			
+			.author
+				@extend .marginCenterResponsive
+				margin-top: 10px
+				margin-bottom: 20px
+
+			.title
+				@extend .marginCenterResponsive
+				font-size: 14px
+				margin-bottom: 30px
+
+			.votesHolder
+				width: 100px
+				margin: 0px auto			
+
+				&.wider
+					width: 140px
+
+				.ups, .downs
+					padding: 0px 0px 0px 25px
+
+				.ups
+					float: left
+
+				.downs	
+					float: right
+
+			.actionLinkText
+				width: 100%
+				top: 70%
+				left: 0px
+				margin-left: 0px
+				font-size: 16px
+
+
+		#articleButton
+			margin: 10px auto 10px auto
+			// width: 94%
+			// padding-left: 3%
+			// padding-right: 3%
+			top: auto
+			left: auto
+
+		.actionsInstructions
+			$instructionsWidth: 280px
+			width: $instructionsWidth
+			position: relative
+			left: auto
+			margin-left: auto
+			text-align: center
+			margin: 15px auto 15px auto
+			font-size: 18px
+			top: auto	
+
+		.smallerButtons
+			top: auto
+			right: auto	
+			width: 130px
+			padding: 10px
+			min-height: 100px
+				
+		#redditLink
+			+backpos(center,20px)
+			@extend .smallerButtons
+			background-size: 65px
+			float: left
+			left: auto
+
+		#emailLink	
+			@extend .smallerButtons
+			+backpos(center,30px)
+			background-size: 47px
+			float: right
+			right: auto
+
+			.actionLinkText
+				top: 73%
+	
+			
+
 //////////////////////////////////////////////////////////////////
 // RESPONSIVENESS
 @media (max-width: 420px)
@@ -450,4 +637,40 @@ body
 	.num_comments
 		display: block
 		margin-bottom: 10px
+
+	//ACTIONS	
+	#actions	
+
+		.smallerButtonsResponsiveMinimum
+			width: 120px
+			padding: 10px
+			min-height: 100px
+
+		.actionsHolder	
+			
+			.author
+				font-size: 16px
+				margin-bottom: 0px
+
+			.title
+				font-size: 12px
+				margin-bottom: 10px
+				
+		#redditLink
+			+backpos(center,20px)
+			@extend .smallerButtonsResponsiveMinimum
+			background-size: 65px
+			float: left
+			left: auto
+
+		#emailLink	
+			@extend .smallerButtonsResponsiveMinimum
+			+backpos(center,30px)
+			background-size: 47px
+			float: right
+			right: auto
+
+			.actionLinkText
+				top: 73%	
+
 

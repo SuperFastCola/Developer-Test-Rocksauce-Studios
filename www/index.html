@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--[if lte IE 9]> <html xmlns="http://www.w3.org/1999/xhtml" class="ie9-and-lower"> <![endif]-->
-<!--[if !IE]><!--> <html xmlns="http://www.w3.org/1999/xhtml"  class="ie9-and-lower"> <!--<![endif]-->
+<!--[if !IE]><!--> <html xmlns="http://www.w3.org/1999/xhtml"> <!--<![endif]-->
 <head>
 	<title>Developer Test - Anthony Baker</title>
 	<meta charset="utf-8" />
@@ -22,6 +22,7 @@
 		</div>
 	</div>
 
+	<!-- Article Section Template -->
 	<script id="articleTemplate" type="text/template">
 		 <div class="article clearfix">
 		 	<div class="articleData thumbnail clearfix"></div>
@@ -35,6 +36,7 @@
 		 </div>
 	</script>
 
+	<!-- Article Selection Action Template -->
 	<script id="articleActions" type="text/template">
 		<div id="actions">
 			<div id="actionColumns">
@@ -43,10 +45,15 @@
 				 	<div class="actionsArticle clearfix">
 				 		<span class="actionsArticle author"></span>
 					 	<span class="actionsArticle title"></span>
-					 	<span class="actionsArticle ups clearfix"><em></em></span>
-					 	<span class="actionsArticle downs clearfix"><em></em></span>
+					 	<div class="actionsArticle votesHolder clearfix">
+					 		<span class="actionsArticle ups">888</span>
+					 		<span class="actionsArticle downs">888</span>
+					 	</div>
 				 	</div>
 		 		</div>
+
+		 		<div class="actionsInstructions drag">Drag the card on the left to the desired action.</div>
+				<div class="actionsInstructions nodrag">Select on a desired action below or click the article above to close.</div>
 
 		 		<div id="redditLink" class="actionsHolder">
 		 			<a class="actionLinkText">Open on Reddit</a>
@@ -55,11 +62,13 @@
 		 		<div id="emailLink" class="actionsHolder">
 		 			<a class="actionLinkText">Email to a Friend</a>
 		 		</div>
+		 		<div class="actionsCloser"></div>
 	 		</div>
-
+	 		<div class="actionsCloser"></div>
 	 	</div>
 	</script>
 
+	<!-- Next and Previous Buttons for Paging -->
 	<script id="articleNavigation" type="text/template">
 	 <div class="navigation clearfix">
 	 	<a class="nextPage">Next</a>
@@ -67,11 +76,17 @@
 	 </div>
 	</script>
 
-	<script id="articletemplate_noresults" type="text/template">
-	 <div class="article noresults"></div>
+	<!-- No Results Found -->
+	<script id="articletemplateNoresults" type="text/template">
+		<div class="noresults">No results found for "<span></span>"</div>
 	</script>
 
-	<script type="text/javascript" src="js/lib/externals.js"></script>
-	<script type="text/javascript" src="js/redditApp.min.js?v=1.0"></script>
+	<!-- No Results Found -->
+	<script id="articletemplateLoader" type="text/template">
+		<div class="articleLoader"></div>
+	</script>
+
+	<script type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="js/src/redditApp.js?v=1.0"></script>
 </body>
 </html>
