@@ -11,7 +11,10 @@
 	my.articles = [];  //holds article for selectable actions overlay
 	my.draggableLoaded = false; //switch to check when draggable functionality loaded
 	my.canDragArticle = true;
+	my.canvasSupport = true;
 	my.currentPage = 0;
+	my.loading = false;
+	my.noResultsCode = null;
 	my.before = null;
 	my.after = null;
 	my.urlParts = Array("https://www.reddit.com/r/","/.json");
@@ -87,11 +90,13 @@
 	//displays each reddit article
 	my.showArticles = function(output){
 
+		my.stopSpinner();
 		$(".articles_area").empty();
 
 		my.gotoTopOfPage();
 
 		var template = null;
+		my.legacy = null;
 		var currentrow = null;
 
 		//flush article out of memory
@@ -101,6 +106,10 @@
 		
 		//return html template	
 		template = $.trim($("#articleTemplate").html());
+
+		if($('html').hasClass("ie8")){
+			my.legacy = $.trim($("#articleActionsLegacy").html());
+		}
 
 		//build each article
 		for(var i in output.data.children){
@@ -126,18 +135,35 @@
 				$(currentrow).find(".thumbnail").addClass("noimage");
 			}
 
+			if(!Boolean(String(article.title).match(/\s/))){
+				article.title = String(article.title).slice(0,20);
+				article.title+="...";
+			}
+
 			$(currentrow).find(".title").text(article.title);
 			$(currentrow).find(".author").text(article.author);
 			$(currentrow).find(".num_comments em").text(String(article.num_comments));
 			$(currentrow).find(".ups em").text(String(article.ups));
 			$(currentrow).find(".downs em").text(String(article.downs));
 
+			if(my.legacy != null){
+				var legacyNav = $(my.legacy).clone();
+				$(currentrow).find(".articleHolder").append(legacyNav);
+				$(currentrow).find(".reddit_fallback,.email_fallback").attr("data-ref",i);
+			}
+
 			//add to main articles
 			$(".articles_area").append(currentrow);
 		}
 		
-		$(".article").bind("click",my.showarticleActions);
 
+		if(my.legacy!=null){
+			my.legacyActions();
+		}
+		else{
+			$(".article").bind("click",my.showarticleActions);	
+		}
+		
 		//append 
 		my.addPageNavigation(output.data.before,output.data.after);
 
@@ -149,6 +175,21 @@
 		//flush memory
 		delete article, currentrow, template;
 		currentrow = article = template = null;
+	}
+
+
+	my.legacyActions = function(e){
+		$(".reddit_fallback").bind("click",function(e){
+				var currentArticle = my.articles[$(e.currentTarget).attr("data-ref")];
+				var redditURL = "https://www.reddit.com" + currentArticle.permalink;
+				my.openLinkInWindow(redditURL);
+		}).attr;
+
+		$(".email_fallback").bind("click",function(e){
+				var currentArticle = my.articles[$(e.currentTarget).attr("data-ref")];
+				var redditURL = "https://www.reddit.com" + currentArticle.permalink;
+				my.openEmailPrompt(redditURL);
+		});
 	}
 
 	//check for word characters
@@ -164,10 +205,9 @@
 
 	//self explanatory
 	my.gotoTopOfPage = function(){
-		var body = $("body, html");
-		if(body.scrollTop()!=0)
+		if($("body").scrollTop()!=0)
 		{
-			body.stop().animate({
+			$("body").stop().animate({
 				scrollTop: 0
 			}, 1000);
 		}
@@ -192,7 +232,14 @@
 		}
 
 		//construct URL
+		if($('html').hasClass("ie9") || $('html').hasClass("ie8")){
+			my.urlParts[0] = my.urlParts[0].replace("https","http");
+		}
+
 		var fullURL = String(my.urlParts[0] + my.category + my.urlParts[1] + urlParams);
+		console.log(fullURL);
+
+		//my.startSpinner();
 
 		//send request
 		var promise = $.ajax({
@@ -207,7 +254,15 @@
 		//display no results message
 		promise.error( function( jqXHR, textStatus, errorThrown ) {
 			console.log(jqXHR.responseText);
+			my.showNoResults();
 		} );
+
+	}
+
+	my.showNoResults = function(){
+		$(my.noResultsCode).find("span").text(my.category);
+		$(".articles_area").html(my.noResultsCode);
+		my.stopSpinner();
 	}
 
 	//returns html template as usable code
@@ -278,14 +333,10 @@
 
 		var butn = document.getElementById("articleButton");
 
-		if(typeof butn != "undefined"){
+		if(typeof butn != "undefined" && typeof window.matchMedia != "undefined"){
 			var smallScreens = ((!window.matchMedia("(min-width: 30em)").matches && window.matchMedia("(max-width: 30em)").matches)?true:false);
 			var articlePosition = String($("#articleButton").css("position"));
 			var articlePositionRelative = (Boolean(articlePosition.match(/relative/i) ) )?true:false
-
-			console.log($("#articleButton").css("position"));
-			console.log(articlePositionRelative);
-			console.log(smallScreens);
 
 			if(smallScreens || articlePositionRelative){
 				my.canDragArticle = false;
@@ -294,56 +345,70 @@
 				my.canDragArticle = true;
 			}
 		}
+		else{
+			my.canDragArticle = false;
+		}
 
 	}
 
 	//article actions
 	my.showarticleActions = function(e){
 
+
+		//contsruct reddit link
+		var currentArticle = my.articles[$(e.currentTarget).attr("data-ref")];
+		var redditURL = "https://www.reddit.com" + currentArticle.permalink;
+
 		if(my.draggableLoaded){
 
-			var actionArea = my.returnHtmlTemplate("articleActions");
-			var currentArticle = my.articles[$(e.currentTarget).attr("data-ref")];
-			
-			actionArea.find(".title").text(currentArticle.title);
-			actionArea.find(".author").text(currentArticle.author);
-			actionArea.find(".ups").text(currentArticle.ups);
-			actionArea.find(".downs").text(currentArticle.downs);
+			if(my.legacy==null){
 
-			// make votes holder wider depending on character count
-			var characterCount = Number(String(currentArticle.ups).length) + Number(String(currentArticle.downs).length);
-			if(characterCount>5){
-				actionArea.find(".votesHolder").addClass("wider");
+				var actionArea = my.returnHtmlTemplate("articleActions");
+				
+				
+				if(!Boolean(String(currentArticle.title).match(/\s/))){
+					currentArticle.title = String(currentArticle.title).slice(0,20);
+					currentArticle.title+="...";
+				}
+
+				actionArea.find(".title").text(currentArticle.title);
+				actionArea.find(".author").text(currentArticle.author);
+				actionArea.find(".ups").text(currentArticle.ups);
+				actionArea.find(".downs").text(currentArticle.downs);
+
+				// make votes holder wider depending on character count
+				var characterCount = Number(String(currentArticle.ups).length) + Number(String(currentArticle.downs).length);
+				if(characterCount>5){
+					actionArea.find(".votesHolder").addClass("wider");
+				}
+
+				//build code
+				var backgroundobject = my.returnBackCSS(currentArticle.thumbnail);
+
+				//check for thumbnail image
+				if(backgroundobject){
+					$(actionArea).find(".thumbnail").css(backgroundobject);
+				}
+				else{
+					$(actionArea).find(".thumbnail").addClass("noimage");
+				}
+
+				$("body").append(actionArea).addClass("overlay");
+
+				//animate in action options
+				TweenLite.to("#actions",.25,{"opacity":1.0});
+
+				//bind actions click
+				my.addRemoveActionsClick();
+
+				my.checkForDrag();
+
+				$(".drag,.nodrag").hide();
+
 			}
-
-			//build code
-			var backgroundobject = my.returnBackCSS(currentArticle.thumbnail);
-
-			//check for thumbnail image
-			if(backgroundobject){
-				$(actionArea).find(".thumbnail").css(backgroundobject);
-			}
-			else{
-				$(actionArea).find(".thumbnail").addClass("noimage");
-			}
-
-			$("body").append(actionArea).addClass("overlay");
-
-			//animate in action options
-			TweenLite.to("#actions",.25,{"opacity":1.0});
-
-			//bind actions click
-			my.addRemoveActionsClick();
-
-			//contsruct reddit link
-			var redditURL = "https://www.reddit.com" + currentArticle.permalink;
-
-			my.checkForDrag();
-
-			$(".drag,.nodrag").hide();
 
 			//start draggable action
-			if(my.canDragArticle){
+			if(my.canDragArticle && my.legacy==null){
 				
 				$(".drag").show();
 
@@ -381,9 +446,13 @@
 
 				$(".nodrag").show();
 
-				$("#articleButton").bind("click",function(){
-					my.removeOverlay();
-				});
+				var articleButton = document.getElementById("articleButton");
+
+				if(typeof articleButton != "undefined"){
+					$("#articleButton").bind("click",function(){
+						my.removeOverlay();
+					});	
+				}
 
 				$("#redditLink").bind("click",function(){
 					my.openLinkInWindow(redditURL);
@@ -398,6 +467,123 @@
 			//flush backgorund out of memory
 			delete backgroundobject;
 			backgroundobject = null;
+		}
+	}
+
+	my.initializeTickers = function(){
+			
+			window.ticker = (function(){
+				    return  window.requestAnimationFrame       || 
+				        window.webkitRequestAnimationFrame || 
+				        window.mozRequestAnimationFrame    || 
+				        window.oRequestAnimationFrame      || 
+				        window.msRequestAnimationFrame     || 
+				        function(/* function */ callback, /* DOMElement */ element){
+				            return window.setTimeout(callback, 1000 / 60);
+				        };
+				})();
+
+				window.stopTicker = (function(){
+					return window.cancelAnimationFrame          ||
+				        window.webkitCancelRequestAnimationFrame    ||
+				        window.mozCancelRequestAnimationFrame       ||
+				        window.oCancelRequestAnimationFrame     ||
+				        window.msCancelRequestAnimationFrame        ||
+				        clearTimeout
+				})();
+	}
+
+	var spinner = {
+		radius:64,
+		points: [],
+		sections: 12,
+		speed: 30,
+		canvas: document.createElement("canvas"),
+		holder: null,
+	}
+
+	my.createPreloaderCanvas = function(attachToId,initObject){
+		var halfRadius = (initObject.radius/2) - 3;
+
+		for(var i = 0; i < initObject.sections; i++) {
+			//math help - http://stackoverflow.com/questions/13608186/trying-to-plot-coordinates-around-the-edge-of-a-circle
+			var startX = 0 + halfRadius/2 * Math.cos(2 * Math.PI * i / initObject.sections);
+		    var startY = 0 + halfRadius/2 * Math.sin(2 * Math.PI * i / initObject.sections);   
+		    var endX = 0 + halfRadius * Math.cos(2 * Math.PI * i / initObject.sections);
+		    var endY = 0 + halfRadius * Math.sin(2 * Math.PI * i / initObject.sections);   
+			initObject.points.push([startX,startY,endX,endY]);
+		}
+
+		initObject.canvas.width = initObject.radius;
+		initObject.canvas.height = initObject.radius;
+		initObject.canvas.id = "spinner";
+
+		console.log(window.CanvasRenderingContext2D);
+
+		if(typeof window.CanvasRenderingContext2D == "undefined"){
+			my.canvasSupport = false;
+		}
+		else{
+			initObject.context = initObject.canvas.getContext("2d");
+			initObject.context.translate(initObject.radius/2,initObject.radius/2);
+			document.body.appendChild(initObject.canvas)
+		}
+
+		my.initializeTickers();
+
+	}
+
+	my.drawSpinner = function(){
+
+		var c = spinner.context;
+		var r = spinner.radius;
+		var p = spinner.points;
+		c.translate(-(r/2),-(r/2));
+		c.globalAlpha = 1;
+		//c.fillStyle = "#ffffff";
+		c.clearRect(0,0,r,r);
+		c.translate(r/2,r/2);
+		c.rotate(Math.PI/spinner.speed);
+		
+		var alpha = .5;
+		var inc = .5/5;
+
+		for(var i in p){
+			if(i>5){
+				alpha += inc;
+			}
+
+			c.globalAlpha = alpha;
+			c.lineWidth = 5;
+      		c.strokeStyle = '#03b6fd';
+      		c.lineCap="round";
+			c.beginPath();
+			c.moveTo(p[i][0],p[i][1]);
+			c.lineTo(p[i][2],p[i][3]);
+			c.stroke();
+		}
+
+		c.globalAlpha=1;
+
+		if(my.loading){
+			window.ticker(my.drawSpinner);	
+		}	
+	}
+
+	my.startSpinner = function(){
+		my.loading = true;
+
+		if(my.canvasSupport){
+			spinner.canvas.style.display= "block";
+			my.drawSpinner();
+		}
+	}
+
+	my.stopSpinner = function(){
+		my.loading = false;
+
+		if(my.canvasSupport){
+			spinner.canvas.style.display= "none";
 		}
 	}
 
@@ -482,8 +668,10 @@
 
 
 	my.init = function () {
+		my.createPreloaderCanvas("allArticles",spinner);
 		my.getData();
 		my.assignFunctions();
+		my.noResultsCode = my.returnHtmlTemplate("articletemplateNoresults");
 	}
 	
 	return my;

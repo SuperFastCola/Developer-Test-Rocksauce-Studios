@@ -16,7 +16,7 @@ module.exports = function(grunt) {
             options: {
                 sourcemap: 'none',
                 trace: true,
-                style: 'nested'
+                style: 'compressed'
             },
             compile: {
                 files: {

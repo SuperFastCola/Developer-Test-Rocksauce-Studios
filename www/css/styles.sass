@@ -188,6 +188,24 @@ body
 		&.expanded
 			width: 200px
 
+//////////////////////////////////////////////////////////////////
+// NO RESULTS AREA
+.noresults
+	font-size: 24px
+	color: $morePurple
+	text-align: center
+
+//////////////////////////////////////////////////////////////////
+// SPINNER PROPERTIES
+
+#spinner
+	position: absolute
+	top: 80px
+	left: 50%
+	margin-left: -(64px/2)
+	display: block
+	margin: 40px auto
+	z-index: 300
 
 //////////////////////////////////////////////////////////////////
 // ARTICLES
@@ -218,7 +236,8 @@ body
 	width: $thumbnailWidth - ($thumbnailBorderWidth * 2)
 	height: $thumbnailWidth - ($thumbnailBorderWidth * 2)
 	+border-radius($thumbnailWidth/2)
-	background-size: 100%
+	background-size: auto 100%
+	+backpos(center,center)
 	border: $thumbnailBorderWidth solid $purple
 
 	&.noimage
@@ -672,5 +691,18 @@ body
 
 			.actionLinkText
 				top: 73%	
+
+//////////////////////////////////////////////////////////////////
+// LEGACY FALLBACKs			
+.ie8
+	.legacyHolder
+		margin: 20px 0px 20px 0px
+
+	.fallback 
+		padding: 5px 25px
+		border: 1px solid $purple
+		color: $morePurple
+		margin-right: 15px
+		+backcolor(white)
 
 

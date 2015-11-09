@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<!--[if lte IE 9]> <html xmlns="http://www.w3.org/1999/xhtml" class="ie9-and-lower"> <![endif]-->
+<!--[if IE 9]> <html xmlns="http://www.w3.org/1999/xhtml" class="ie9"> <![endif]-->
+<!--[if lte IE 8]> <html xmlns="http://www.w3.org/1999/xhtml" class="ie8"> <![endif]-->
 <!--[if !IE]><!--> <html xmlns="http://www.w3.org/1999/xhtml"> <!--<![endif]-->
 <head>
 	<title>Developer Test - Anthony Baker</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" >
 	<link rel="stylesheet" type="text/css" href="css/styles.css?v=1.0">
 	<link href='https://fonts.googleapis.com/css?family=Exo:300,300italic,400,500' rel='stylesheet' type='text/css'>
 </head>
@@ -18,7 +20,7 @@
 			</div>
 		</div>
 
-		<div class="articles_area">
+		<div id="allArticles" class="articles_area">
 		</div>
 	</div>
 
@@ -34,6 +36,14 @@
 			 	<span class="articleData downs clearfix"><em></em> downs</span>
 		 	</div>
 		 </div>
+	</script>
+
+	<!-- backup actions buttons for legacy -->
+	<script id="articleActionsLegacy" type="text/template">
+		<div class="legacyHolder">
+			<span class="reddit_fallback fallback">Open on Reddit</span>
+			<span class="email_fallback fallback">Email to a Friend</span>
+		</div>
 	</script>
 
 	<!-- Article Selection Action Template -->
@@ -53,7 +63,7 @@
 		 		</div>
 
 		 		<div class="actionsInstructions drag">Drag the card on the left to the desired action.</div>
-				<div class="actionsInstructions nodrag">Select on a desired action below or click the article above to close.</div>
+				<div class="actionsInstructions nodrag">Select on a desired action below or click the article to close.</div>
 
 		 		<div id="redditLink" class="actionsHolder">
 		 			<a class="actionLinkText">Open on Reddit</a>
@@ -78,15 +88,10 @@
 
 	<!-- No Results Found -->
 	<script id="articletemplateNoresults" type="text/template">
-		<div class="noresults">No results found for "<span></span>"</div>
-	</script>
-
-	<!-- No Results Found -->
-	<script id="articletemplateLoader" type="text/template">
-		<div class="articleLoader"></div>
+		<div class="article clearfix noresults">No results found for "<span></span>"</div>
 	</script>
 
 	<script type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="js/src/redditApp.js?v=1.0"></script>
+	<script type="text/javascript" src="js/redditApp.min.js?v=1.0"></script>
 </body>
 </html>
